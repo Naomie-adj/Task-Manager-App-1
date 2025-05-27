@@ -1,3 +1,5 @@
+version: "3.9"
+
 services:
   db:
     image: postgres
@@ -5,7 +7,7 @@ services:
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
-      POSTGRES_DB: 
+      POSTGRES_DB: mydb  # Remplace "mydb" par le nom de ta BDD
     volumes:
       - db-data:/var/lib/postgresql/data
     ports:
@@ -24,9 +26,27 @@ services:
       - DEBUG=1
       - DJANGO_DB_HOST=db
       - DJANGO_DB_PORT=5432
-      - DJANGO_DB_NAME=
+      - DJANGO_DB_NAME=mydb
       - DJANGO_DB_USER=postgres
       - DJANGO_DB_PASSWORD=postgres
 
+  prometheus:
+    image: prom/prometheus
+    volumes:
+      - ./monitoring/prometheus.yml:/etc/prometheus/prometheus.yml
+    ports:
+      - "9090:9090"
+
+  grafana:
+    image: grafana/grafana
+    ports:
+      - "3000:3000"
+    volumes:
+      - grafana-data:/var/lib/grafana
+    depends_on:
+      - prometheus
+
 volumes:
   db-data:
+  grafana-data:
+
