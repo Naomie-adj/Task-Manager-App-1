@@ -7,7 +7,7 @@ services:
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
-      POSTGRES_DB: mydb  # Remplace "mydb" par le nom de ta BDD
+      POSTGRES_DB: mydb
     volumes:
       - db-data:/var/lib/postgresql/data
     ports:
