@@ -5,14 +5,14 @@ FROM python:3.11-slim
 WORKDIR /app
 
 # Copier les fichiers nécessaires dans l'image
-COPY poetry.lock pyproject.toml /server/
+COPY poetry.lock pyproject.toml ./
 
 # Installer Poetry
 RUN pip install poetry
-COPY ..
+COPY . .
 
 # Exposer le port Django
 EXPOSE 8000
 
 # Commande par défaut pour lancer le serveur Django
-CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]
+CMD ["poetry", "run", "python", "manage.py", "runserver", "--bind", "0.0.0.0:8000"]
