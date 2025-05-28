@@ -2,7 +2,7 @@
 FROM python:3.11-slim
 
 # Définir le répertoire de travail dans le conteneur
-WORKDIR /server
+WORKDIR /app
 
 # Copier les fichiers nécessaires dans l'image
 COPY poetry.lock pyproject.toml /server/
