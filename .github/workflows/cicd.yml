@@ -1,4 +1,4 @@
-name: Django CI/CD
+name: CI/CD - Django & React
 
 on:
   push:
@@ -7,7 +7,8 @@ on:
     branches: [main]
 
 jobs:
-  build-test:
+  backend:
+    name: Test Django (Poetry)
     runs-on: ubuntu-latest
 
     services:
@@ -33,17 +34,45 @@ jobs:
       DEBUG: 1
 
     steps:
-      - uses: actions/checkout@v3
+      - name: Checkout code
+        uses: actions/checkout@v3
 
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
           python-version: '3.11'
 
-      - name: Install dependencies
-        run:
-
-      - name: Run Django tests
+      - name: Install Poetry
         run: |
-          python manage.py migrate
-          python manage.py test
+          pip install poetry
+
+      - name: Install dependencies
+        run: |
+          cd server
+          poetry install
+
+      - name: Run migrations and tests
+        run: |
+          cd server
+          poetry run python manage.py migrate
+          poetry run python manage.py test
+
+  frontend:
+    name: uild React (Yarn)
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+
+      - name: Install and build frontend
+        run: |
+          cd client
+          yarn install
+          yarn build
+
