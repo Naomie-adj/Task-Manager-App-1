@@ -14,26 +14,19 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Set up Docker Buildx
+      - name: Set up Docker
         uses: docker/setup-buildx-action@v3
 
       - name: Start Docker containers
         run: docker-compose up -d --build
 
-      - name: Wait for PostgreSQL to be ready
+      - name: Wait for database to be ready
         run: |
           echo "Waiting for PostgreSQL..."
-          until docker exec $(docker ps -qf "name=db") pg_isready -U postgres; do
-            echo "Retrying..."
-            sleep 2
-          done
-
-      - name: Run migrations
-        run: docker-compose exec -T web python manage.py migrate
+          docker-compose exec -T web sh -c 'while ! nc -z db 5432; do sleep 1; done'
 
       - name: Run Django tests
         run: docker-compose exec -T web python manage.py test
 
-      - name: Stop containers
+      - name: Tear down containers
         run: docker-compose down -v
-
