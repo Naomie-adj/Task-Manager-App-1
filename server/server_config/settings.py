@@ -26,12 +26,15 @@ SECRET_KEY = 'django-insecure-mn!y$_81j_#onhq*4n#_ikof$)p-)g$xl+79f9_e9eu9c2r_w(
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
 
 INSTALLED_APPS = [
+    'corsheaders',
+    'rest_framework',
+    'rest_framework.authtoken',
     'task',
     'rest_framework',
     'django.contrib.admin',
@@ -40,10 +43,10 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'user'
 ]
 
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -70,6 +73,12 @@ TEMPLATES = [
     },
 ]
 
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:3000",  # Adresse du frontend React
+    "http://localhost:5173",   # Vite
+    "http://localhost",  
+]
+
 WSGI_APPLICATION = 'server_config.wsgi.application'
 
 
@@ -78,6 +87,14 @@ WSGI_APPLICATION = 'server_config.wsgi.application'
 
 DATABASES = {
     'default': {
+<<<<<<< HEAD
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': os.getenv('DJANGO_DB_NAME', 'mydb'),
+        'USER': os.getenv('DJANGO_DB_USER', 'postgres'),
+        'PASSWORD': os.getenv('DJANGO_DB_PASSWORD', 'postgres'),
+        'HOST': os.getenv('DJANGO_DB_HOST', 'db'),  
+        'PORT': os.getenv('DJANGO_DB_PORT', '5432'),
+=======
 
         'ENGINE':'django.db.backends.postgresql',
         'NAME':'mydb',
@@ -93,6 +110,7 @@ DATABASES = {
         'HOST':'localhost',
         'PORT':'5432',
 
+>>>>>>> 2d745a1e8f33b2c34cee133cf19703eb645dae22
     }
 }
 
@@ -115,6 +133,16 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.TokenAuthentication',
+        # ou 'rest_framework.authentication.SessionAuthentication',
+    ],
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.IsAuthenticated',
+    ],
+}
+
 
 # Internationalization
 # https://docs.djangoproject.com/en/5.2/topics/i18n/
@@ -132,7 +160,11 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.2/howto/static-files/
 
 STATIC_URL = 'static/'
+<<<<<<< HEAD
+STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
+=======
 # STATICFILES_DIRS= ['static'] 
+>>>>>>> 2d745a1e8f33b2c34cee133cf19703eb645dae22
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field

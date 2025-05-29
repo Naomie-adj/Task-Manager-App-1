@@ -9,7 +9,7 @@ services:
 
   client:
     build: ./client
-    command: yarn dev
+    command: yarn dev --host
     ports:
       - "5173:5173"
     depends_on:
@@ -30,7 +30,11 @@ services:
 
   server:
     build: ./server
-    command: poetry run python manage.py runserver 0.0.0.0:8000
+    command:  >
+      sh -c "
+        python manage.py migrate &&
+        gunicorn server_config.wsgi:application --bind 0.0.0.0:8000
+      "
     volumes:
       - .:/code
     ports:
@@ -39,11 +43,11 @@ services:
       - db
     environment:
       - DEBUG=1
-      - DJANGO_DB_HOST=db
-      - DJANGO_DB_PORT=5432
-      - DJANGO_DB_NAME=mydb
-      - DJANGO_DB_USER=postgres
-      - DJANGO_DB_PASSWORD=postgres
+      - POSTGRES_HOST=db
+      - POSTGRES_PORT=5432
+      - POSTGRES_DB=mydb
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
 
   prometheus:
     image: prom/prometheus
