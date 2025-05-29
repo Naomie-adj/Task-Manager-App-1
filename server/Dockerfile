@@ -12,9 +12,3 @@ RUN poetry config virtualenvs.create false
 RUN poetry install --no-root
 
 COPY . .
-
-# Exposer le port Django
-EXPOSE 8000
-
-# Commande par défaut pour lancer le serveur Django
-CMD ["poetry", "run", "python", "manage.py", "runserver", "--bind", "0.0.0.0:8000"]
