@@ -2,6 +2,9 @@ import React, { useState } from "react";
 import List from "./List";
 import { DragDropContext } from "react-beautiful-dnd";
 import Box from "@mui/material/Box";
+import Button from "@mui/material/Button";
+import TextField from "@mui/material/TextField";
+import Paper from "@mui/material/Paper";
 
 function Board() {
   const [lists, setLists] = useState([
@@ -9,6 +12,7 @@ function Board() {
     { id: "list-2", title: "En cours", cards: ["Tâche 3"] },
     { id: "list-3", title: "Terminé", cards: ["Tâche 4"] },
   ]);
+  const [newListTitle, setNewListTitle] = useState("");
 
   const handleDragEnd = (result) => {
     const { source, destination } = result;
@@ -43,16 +47,27 @@ function Board() {
     setLists(updatedLists);
   };
 
+  const handleAddList = () => {
+    if (newListTitle.trim() === "") return;
+    const newList = {
+      id: `list-${Date.now()}`,
+      title: newListTitle,
+      cards: [],
+    };
+    setLists([...lists, newList]);
+    setNewListTitle("");
+  };
+
   return (
     <DragDropContext onDragEnd={handleDragEnd}>
       <Box
         sx={{
           display: "flex",
-          gap: 3,
+          alignItems: "flex-start",
+          gap: 2,
           padding: 3,
           backgroundColor: "#0079bf",
           minHeight: "100vh",
-          flexWrap: "wrap",
           overflowX: "auto",
         }}
       >
@@ -65,9 +80,39 @@ function Board() {
             onAddCard={handleAddCard}
           />
         ))}
+
+        {/* Ajouter une nouvelle liste */}
+        <Paper
+          sx={{
+            backgroundColor: "#ebecf0",
+            padding: 2,
+            width: 270,
+            borderRadius: 2,
+            flexShrink: 0,
+            boxShadow: 1,
+            display: "flex",
+            flexDirection: "column",
+            gap: 1,
+          }}
+        >
+          <TextField
+            variant="outlined"
+            size="small"
+            placeholder="Titre de la liste"
+            value={newListTitle}
+            onChange={(e) => setNewListTitle(e.target.value)}
+            fullWidth
+          />
+          <Button variant="contained" onClick={handleAddList}>
+            + Ajouter une liste
+          </Button>
+        </Paper>
       </Box>
     </DragDropContext>
   );
 }
 
 export default Board;
+
+
+
