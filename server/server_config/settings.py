@@ -33,6 +33,7 @@ ALLOWED_HOSTS = []
 
 INSTALLED_APPS = [
     'task',
+    'rest_framework',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -52,7 +53,7 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-ROOT_URLCONF = 'server_config.urls'
+ROOT_URLCONF = 'user.urls'
 
 TEMPLATES = [
     {
@@ -77,12 +78,12 @@ WSGI_APPLICATION = 'server_config.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgres',
-        'NAME': 'mydb',
+        'ENGINE':'django.db.backends.postgresql',
+        'NAME':'mydb',
         'USER':'postgres', 
-        'PASSWORD': 'postgres',
+        'PASSWORD':'postgres',
         'HOST':'localhost',
-        'PORT':'5432',
+        'PORT':'5433',
     }
 }
 
@@ -122,7 +123,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.2/howto/static-files/
 
 STATIC_URL = 'static/'
-STATICFILES_DIRS= ['static'] 
+# STATICFILES_DIRS= ['static'] 
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
