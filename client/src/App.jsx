@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import { useEffect, useState } from 'react';
 import api from './api';  // importe la config axios
 
@@ -23,7 +24,34 @@ function App() {
         ))}
       </ul>
     </div>
+=======
+import React from "react";
+import Board from "./components/Board";
+import Header from "./components/Header";
+
+function App() {
+  return (
+    <>
+      <Header />
+      <Board />
+    </>
+>>>>>>> 2d745a1e8f33b2c34cee133cf19703eb645dae22
   );
 }
 
 export default App;
+<<<<<<< HEAD
+=======
+
+
+
+
+
+
+
+
+
+
+
+
+>>>>>>> 2d745a1e8f33b2c34cee133cf19703eb645dae22

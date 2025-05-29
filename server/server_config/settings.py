@@ -36,6 +36,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'rest_framework.authtoken',
     'task',
+    'rest_framework',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -55,7 +56,7 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-ROOT_URLCONF = 'server_config.urls'
+ROOT_URLCONF = 'user.urls'
 
 TEMPLATES = [
     {
@@ -86,12 +87,30 @@ WSGI_APPLICATION = 'server_config.wsgi.application'
 
 DATABASES = {
     'default': {
+<<<<<<< HEAD
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': os.getenv('DJANGO_DB_NAME', 'mydb'),
         'USER': os.getenv('DJANGO_DB_USER', 'postgres'),
         'PASSWORD': os.getenv('DJANGO_DB_PASSWORD', 'postgres'),
         'HOST': os.getenv('DJANGO_DB_HOST', 'db'),  
         'PORT': os.getenv('DJANGO_DB_PORT', '5432'),
+=======
+
+        'ENGINE':'django.db.backends.postgresql',
+        'NAME':'mydb',
+        'USER':'postgres', 
+        'PASSWORD':'postgres',
+        'HOST':'localhost',
+        'PORT':'5433',
+
+        'ENGINE': 'django.db.backends.postgres',
+        'NAME': 'mydb',
+        'USER':'postgres', 
+        'PASSWORD': 'postgres',
+        'HOST':'localhost',
+        'PORT':'5432',
+
+>>>>>>> 2d745a1e8f33b2c34cee133cf19703eb645dae22
     }
 }
 
@@ -141,7 +160,11 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.2/howto/static-files/
 
 STATIC_URL = 'static/'
+<<<<<<< HEAD
 STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
+=======
+# STATICFILES_DIRS= ['static'] 
+>>>>>>> 2d745a1e8f33b2c34cee133cf19703eb645dae22
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
