@@ -1,13 +1,21 @@
 import React from "react";
-import Board from "./components/Board";  // par exemple si dans components/
- // Ça veut dire "fichier Board.jsx dans le même dossier"
-
+import Board from "./components/Board";
+import Header from "./components/Header";
 
 function App() {
-  return <Board />;
+  return (
+    <>
+      <Header />
+      <Board />
+    </>
+  );
 }
 
 export default App;
+
+
+
+
 
 
 
