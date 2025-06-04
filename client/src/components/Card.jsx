@@ -12,15 +12,40 @@ function CardItem({ text, index }) {
           {...provided.draggableProps}
           {...provided.dragHandleProps}
           sx={{
-            padding: 1,
+            padding: { xs: "0.75rem", sm: "1rem" },
             backgroundColor: "#fff",
             marginBottom: 1,
             borderRadius: 1,
             boxShadow: 1,
             cursor: "pointer",
+            "&:hover": {
+              boxShadow: 2,
+              backgroundColor: "#f8f9fa"
+            },
+            transition: "all 0.2s ease-in-out"
           }}
         >
-          <Typography>{text}</Typography>
+          <Typography
+            sx={{
+              fontSize: { xs: "0.875rem", sm: "1rem" },
+              wordBreak: "break-word",
+              lineHeight: 1.4
+            }}
+          >
+            {text.content}
+            {text.description && (
+              <Typography
+                variant="body2"
+                color="text.secondary"
+                sx={{
+                  fontSize: { xs: "0.75rem", sm: "0.875rem" },
+                  marginTop: 0.5
+                }}
+              >
+                {text.description}
+              </Typography>
+            )}
+          </Typography>
         </Paper>
       )}
     </Draggable>

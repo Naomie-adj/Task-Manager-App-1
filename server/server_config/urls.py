@@ -1,16 +1,13 @@
-from django.urls import path
-from django.contrib.auth.models import User
 from django.contrib import admin
 from django.urls import path, include
-from django.http import JsonResponse
+from rest_framework.routers import DefaultRouter
+from user.views import TaskViewSet
 
-def api_root(request):
-    return JsonResponse({"message": "API is running"})
-
+router = DefaultRouter()
+router.register(r'tasks', TaskViewSet)
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('api/', include('task.urls')),
-    path('', api_root),
-    
+    path('api/', include(router.urls)),
+    path('api-auth/', include('rest_framework.urls')),
 ]

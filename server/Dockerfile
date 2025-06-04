@@ -9,6 +9,8 @@ WORKDIR /app
 COPY pyproject.toml ./
 
 RUN poetry config virtualenvs.create false
-RUN poetry install --no-root
+RUN poetry install --no-interaction --no-ansi --no-root
 
 COPY . .
+
+CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import List from "./List";
 import { DragDropContext } from "react-beautiful-dnd";
 import Box from "@mui/material/Box";
@@ -6,15 +6,36 @@ import Button from "@mui/material/Button";
 import TextField from "@mui/material/TextField";
 import Paper from "@mui/material/Paper";
 
-function Board() {
+function Board({ api }) {
   const [lists, setLists] = useState([
-    { id: "list-1", title: "À faire", cards: ["Tâche 1", "Tâche 2"] },
-    { id: "list-2", title: "En cours", cards: ["Tâche 3"] },
-    { id: "list-3", title: "Terminé", cards: ["Tâche 4"] },
+    { id: "list-1", title: "À faire", cards: [] },
+    { id: "list-2", title: "En cours", cards: [] },
+    { id: "list-3", title: "Terminé", cards: [] },
   ]);
   const [newListTitle, setNewListTitle] = useState("");
 
-  const handleDragEnd = (result) => {
+  useEffect(() => {
+    // Charger les tâches depuis l'API
+    api.get('/tasks/')
+      .then((response) => {
+        const tasks = response.data;
+        // Organiser les tâches dans les listes appropriées
+        const updatedLists = lists.map(list => ({
+          ...list,
+          cards: tasks.filter(task => task.status === list.id).map(task => ({
+            id: task.id,
+            content: task.title,
+            description: task.description
+          }))
+        }));
+        setLists(updatedLists);
+      })
+      .catch((error) => {
+        console.error('Erreur lors de la récupération des tâches:', error);
+      });
+  }, []);
+
+  const handleDragEnd = async (result) => {
     const { source, destination } = result;
     if (!destination) return;
 
@@ -24,27 +45,55 @@ function Board() {
     const sourceCards = Array.from(lists[sourceListIndex].cards);
     const [movedCard] = sourceCards.splice(source.index, 1);
 
-    if (source.droppableId === destination.droppableId) {
-      sourceCards.splice(destination.index, 0, movedCard);
-      const updatedLists = [...lists];
-      updatedLists[sourceListIndex].cards = sourceCards;
-      setLists(updatedLists);
-    } else {
-      const destCards = Array.from(lists[destListIndex].cards);
-      destCards.splice(destination.index, 0, movedCard);
+    try {
+      // Mettre à jour le statut de la tâche dans l'API
+      await api.patch(`/tasks/${movedCard.id}/`, {
+        status: destination.droppableId
+      });
 
-      const updatedLists = [...lists];
-      updatedLists[sourceListIndex].cards = sourceCards;
-      updatedLists[destListIndex].cards = destCards;
-      setLists(updatedLists);
+      if (source.droppableId === destination.droppableId) {
+        sourceCards.splice(destination.index, 0, movedCard);
+        const updatedLists = [...lists];
+        updatedLists[sourceListIndex].cards = sourceCards;
+        setLists(updatedLists);
+      } else {
+        const destCards = Array.from(lists[destListIndex].cards);
+        destCards.splice(destination.index, 0, movedCard);
+
+        const updatedLists = [...lists];
+        updatedLists[sourceListIndex].cards = sourceCards;
+        updatedLists[destListIndex].cards = destCards;
+        setLists(updatedLists);
+      }
+    } catch (error) {
+      console.error('Erreur lors de la mise à jour de la tâche:', error);
     }
   };
 
-  const handleAddCard = (listId, text) => {
-    const updatedLists = lists.map((list) =>
-      list.id === listId ? { ...list, cards: [...list.cards, text] } : list
-    );
-    setLists(updatedLists);
+  const handleAddCard = async (listId, text) => {
+    try {
+      const response = await api.post('/tasks/', {
+        title: text,
+        status: listId,
+        description: ''
+      });
+      
+      const updatedLists = lists.map((list) =>
+        list.id === listId 
+          ? { 
+              ...list, 
+              cards: [...list.cards, {
+                id: response.data.id,
+                content: response.data.title,
+                description: response.data.description
+              }]
+            } 
+          : list
+      );
+      setLists(updatedLists);
+    } catch (error) {
+      console.error('Erreur lors de l\'ajout de la tâche:', error);
+    }
   };
 
   const handleAddList = () => {
@@ -63,12 +112,14 @@ function Board() {
       <Box
         sx={{
           display: "flex",
-          alignItems: "flex-start",
+          flexDirection: { xs: "column", md: "row" },
+          alignItems: { xs: "center", md: "flex-start" },
           gap: 2,
-          padding: 3,
+          padding: { xs: 1, sm: 2, md: 3 },
           backgroundColor: "#0079bf",
           minHeight: "100vh",
           overflowX: "auto",
+          width: "100%",
         }}
       >
         {lists.map((list) => (
@@ -85,14 +136,16 @@ function Board() {
         <Paper
           sx={{
             backgroundColor: "#ebecf0",
-            padding: 2,
-            width: 270,
+            padding: { xs: 1, sm: 2 },
+            width: { xs: "100%", sm: 270 },
+            maxWidth: 270,
             borderRadius: 2,
             flexShrink: 0,
             boxShadow: 1,
             display: "flex",
             flexDirection: "column",
             gap: 1,
+            margin: { xs: "0 16px", sm: 0 },
           }}
         >
           <TextField
@@ -103,7 +156,14 @@ function Board() {
             onChange={(e) => setNewListTitle(e.target.value)}
             fullWidth
           />
-          <Button variant="contained" onClick={handleAddList}>
+          <Button 
+            variant="contained" 
+            onClick={handleAddList}
+            sx={{
+              whiteSpace: "nowrap",
+              fontSize: { xs: "0.875rem", sm: "1rem" }
+            }}
+          >
             + Ajouter une liste
           </Button>
         </Paper>
